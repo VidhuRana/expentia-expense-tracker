@@ -10,7 +10,8 @@ import {
   StatusBar,
   Modal,
   TextInput,
-  Platform
+  Platform,
+  Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
@@ -25,6 +26,10 @@ const BudgetScreen = ({ navigation }) => {
   const [showAddBudget, setShowAddBudget] = useState(false);
   const [showEditBudget, setShowEditBudget] = useState(false);
   const [editingBudget, setEditingBudget] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [fadeAnim] = useState(new Animated.Value(0));
+  const [slideAnim] = useState(new Animated.Value(50));
 
   // Form state
   const [budgetName, setBudgetName] = useState('');
@@ -48,7 +53,23 @@ const BudgetScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchBudgetData();
+    animateIn();
   }, []);
+
+  const animateIn = () => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   const fetchBudgetData = async () => {
     try {
@@ -139,7 +160,23 @@ const BudgetScreen = ({ navigation }) => {
         return;
       }
 
-      Alert.alert('Success', 'Budget created successfully!');
+      // Show custom success message with animation
+      setSuccessMessage('Budget created successfully! 🎉');
+      setShowSuccessMessage(true);
+      // Trigger entrance animation
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       setShowAddBudget(false);
       fetchBudgetData(); // Refresh data
     } catch (error) {
@@ -186,7 +223,23 @@ const BudgetScreen = ({ navigation }) => {
         return;
       }
 
-      Alert.alert('Success', 'Budget updated successfully!');
+      // Show custom success message with animation
+      setSuccessMessage('Budget updated successfully! ✨');
+      setShowSuccessMessage(true);
+      // Trigger entrance animation
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       setShowEditBudget(false);
       setEditingBudget(null);
       fetchBudgetData(); // Refresh data
@@ -214,7 +267,23 @@ const BudgetScreen = ({ navigation }) => {
                 return;
               }
 
-              Alert.alert('Success', 'Budget deleted successfully!');
+                             // Show custom success message with animation
+               setSuccessMessage('Budget deleted successfully! 🗑️');
+               setShowSuccessMessage(true);
+               // Trigger entrance animation
+               Animated.parallel([
+                 Animated.timing(fadeAnim, {
+                   toValue: 1,
+                   duration: 300,
+                   useNativeDriver: true,
+                 }),
+                 Animated.timing(slideAnim, {
+                   toValue: 0,
+                   duration: 300,
+                   useNativeDriver: true,
+                 }),
+               ]).start();
+               setTimeout(() => setShowSuccessMessage(false), 3000);
               fetchBudgetData(); // Refresh data
             } catch (error) {
               console.error('Error deleting budget:', error);
@@ -478,6 +547,36 @@ const BudgetScreen = ({ navigation }) => {
     textAlign: 'center',
   });
 
+  // Success Message Styles
+  const successMessageStyle = {
+    position: 'absolute',
+    top: 100,
+    left: theme.spacing.lg,
+    right: theme.spacing.lg,
+    backgroundColor: '#10b981',
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#10b981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 1000,
+  };
+
+  const successIconStyle = {
+    marginRight: theme.spacing.md,
+  };
+
+  const successTextStyle = {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+  };
+
   const saveButtonStyle = {
     backgroundColor: theme.colors.accent,
     paddingVertical: theme.spacing.lg,
@@ -495,6 +594,22 @@ const BudgetScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={containerStyle}>
       <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
+      
+      {/* Success Message */}
+      {showSuccessMessage && (
+        <Animated.View 
+          style={[
+            successMessageStyle,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }]
+            }
+          ]}
+        >
+          <Ionicons name="checkmark-circle" size={24} color="#ffffff" style={successIconStyle} />
+          <Text style={successTextStyle}>{successMessage}</Text>
+        </Animated.View>
+      )}
       
       <View style={contentStyle}>
         {/* Header */}

@@ -110,6 +110,7 @@ const HomeScreen = ({ navigation, route }) => {
   // Budget state
   const [budgetUsage, setBudgetUsage] = useState([]);
   const [budgetAlerts, setBudgetAlerts] = useState([]);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Recalculate budget left when monthly budget changes
   useEffect(() => {
@@ -337,7 +338,22 @@ const HomeScreen = ({ navigation, route }) => {
         return;
       }
 
-      Alert.alert('Success', 'Expense added successfully!');
+      // Show custom success message with animation
+      setShowSuccessMessage(true);
+      // Trigger entrance animation
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       setShowAddExpense(false);
       resetForm();
       
@@ -725,6 +741,36 @@ const HomeScreen = ({ navigation, route }) => {
     fontWeight: 'bold',
   };
 
+  // Success Message Styles
+  const successMessageStyle = {
+    position: 'absolute',
+    top: 100,
+    left: theme.spacing.lg,
+    right: theme.spacing.lg,
+    backgroundColor: '#10b981',
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#10b981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 1000,
+  };
+
+  const successIconStyle = {
+    marginRight: theme.spacing.md,
+  };
+
+  const successTextStyle = {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+  };
+
   const buttonTextStyle = (isPrimary) => ({
     color: isPrimary ? theme.colors.primary : theme.colors.text,
     fontSize: 16,
@@ -735,7 +781,23 @@ const HomeScreen = ({ navigation, route }) => {
     <SafeAreaView style={containerStyle}>
       <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
       
-      <Animated.View 
+      {/* Success Message */}
+      {showSuccessMessage && (
+        <Animated.View 
+          style={[
+            successMessageStyle,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }]
+            }
+          ]}
+        >
+          <Ionicons name="checkmark-circle" size={24} color="#ffffff" style={successIconStyle} />
+          <Text style={successTextStyle}>Expense added successfully! 🎉</Text>
+        </Animated.View>
+      )}
+      
+      <Animated.View
         style={[
           contentStyle,
           {
