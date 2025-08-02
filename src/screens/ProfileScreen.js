@@ -225,13 +225,50 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handleSaveNotifications = () => {
-    showSuccessWithAnimation('Notification settings saved! 🔔');
-    setShowNotifications(false);
+    // Save notification settings to user preferences
+    try {
+      // In a real app, this would save to AsyncStorage or database
+      showSuccessWithAnimation('Notification settings saved! 🔔');
+      setShowNotifications(false);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save notification settings');
+    }
   };
 
   const handleSavePrivacy = () => {
-    showSuccessWithAnimation('Privacy settings updated! 🔒');
-    setShowPrivacy(false);
+    // Save privacy settings to user preferences
+    try {
+      // In a real app, this would save to AsyncStorage or database
+      showSuccessWithAnimation('Privacy settings updated! 🔒');
+      setShowPrivacy(false);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save privacy settings');
+    }
+  };
+
+  const handleToggleNotification = (type) => {
+    switch (type) {
+      case 'push':
+        setPushNotifications(!pushNotifications);
+        break;
+      case 'email':
+        setEmailNotifications(!emailNotifications);
+        break;
+      case 'budget':
+        setBudgetAlerts(!budgetAlerts);
+        break;
+    }
+  };
+
+  const handleTogglePrivacy = (type) => {
+    switch (type) {
+      case 'biometric':
+        setBiometricAuth(!biometricAuth);
+        break;
+      case 'sync':
+        setDataSync(!dataSync);
+        break;
+    }
   };
 
   const handleHelpItem = (item) => {
@@ -296,6 +333,41 @@ const ProfileScreen = ({ navigation }) => {
           onPress: () => {
             showSuccessWithAnimation('Backup created successfully! ☁️');
             // In a real app, this would trigger actual backup
+          },
+        },
+      ]
+    );
+  };
+
+  const handleClearData = () => {
+    Alert.alert(
+      'Clear All Data',
+      'This will permanently delete all your expenses and budgets. This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear',
+          style: 'destructive',
+          onPress: () => {
+            showSuccessWithAnimation('Data cleared successfully! 🗑️');
+            // In a real app, this would clear all user data
+          },
+        },
+      ]
+    );
+  };
+
+  const handleChangePassword = () => {
+    Alert.alert(
+      'Change Password',
+      'A password reset link will be sent to your email address.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Send Reset Link',
+          onPress: () => {
+            showSuccessWithAnimation('Password reset link sent! 📧');
+            // In a real app, this would send password reset email
           },
         },
       ]
@@ -436,7 +508,7 @@ const ProfileScreen = ({ navigation }) => {
   const signOutButtonStyle = {
     backgroundColor: '#ef4444',
     borderRadius: theme.borderRadius.lg,
-    paddingVertical: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
     alignItems: 'center',
     marginTop: theme.spacing.lg,
     shadowColor: '#ef4444',
@@ -448,7 +520,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const signOutTextStyle = {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   };
 
@@ -804,18 +876,42 @@ const ProfileScreen = ({ navigation }) => {
                   <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={menuItemStyle} 
-                  activeOpacity={0.7}
-                  onPress={handleBackupData}
-                >
-                  <View style={menuItemIconStyle}>
-                    <Ionicons name="cloud-upload" size={20} color={theme.colors.text} />
-                  </View>
-                  <Text style={menuItemTextStyle}>Backup Data</Text>
-                  <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-                </TouchableOpacity>
-              </View>
+                                 <TouchableOpacity 
+                   style={menuItemStyle} 
+                   activeOpacity={0.7}
+                   onPress={handleBackupData}
+                 >
+                   <View style={menuItemIconStyle}>
+                     <Ionicons name="cloud-upload" size={20} color={theme.colors.text} />
+                   </View>
+                   <Text style={menuItemTextStyle}>Backup Data</Text>
+                   <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
+                 </TouchableOpacity>
+
+                 <TouchableOpacity 
+                   style={menuItemStyle} 
+                   activeOpacity={0.7}
+                   onPress={handleChangePassword}
+                 >
+                   <View style={menuItemIconStyle}>
+                     <Ionicons name="key" size={20} color={theme.colors.text} />
+                   </View>
+                   <Text style={menuItemTextStyle}>Change Password</Text>
+                   <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
+                 </TouchableOpacity>
+
+                 <TouchableOpacity 
+                   style={menuItemStyle} 
+                   activeOpacity={0.7}
+                   onPress={handleClearData}
+                 >
+                   <View style={menuItemIconStyle}>
+                     <Ionicons name="trash" size={20} color={theme.colors.text} />
+                   </View>
+                   <Text style={menuItemTextStyle}>Clear All Data</Text>
+                   <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
+                 </TouchableOpacity>
+               </View>
 
               {/* Sign Out Button */}
               <TouchableOpacity 
@@ -932,7 +1028,7 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={settingTextStyle}>Push Notifications</Text>
               <Switch
                 value={pushNotifications}
-                onValueChange={setPushNotifications}
+                onValueChange={() => handleToggleNotification('push')}
                 trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
                 thumbColor={pushNotifications ? theme.colors.primary : theme.colors.textSecondary}
               />
@@ -942,7 +1038,7 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={settingTextStyle}>Email Notifications</Text>
               <Switch
                 value={emailNotifications}
-                onValueChange={setEmailNotifications}
+                onValueChange={() => handleToggleNotification('email')}
                 trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
                 thumbColor={emailNotifications ? theme.colors.primary : theme.colors.textSecondary}
               />
@@ -952,7 +1048,7 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={settingTextStyle}>Budget Alerts</Text>
               <Switch
                 value={budgetAlerts}
-                onValueChange={setBudgetAlerts}
+                onValueChange={() => handleToggleNotification('budget')}
                 trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
                 thumbColor={budgetAlerts ? theme.colors.primary : theme.colors.textSecondary}
               />
@@ -988,7 +1084,7 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={settingTextStyle}>Biometric Authentication</Text>
               <Switch
                 value={biometricAuth}
-                onValueChange={setBiometricAuth}
+                onValueChange={() => handleTogglePrivacy('biometric')}
                 trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
                 thumbColor={biometricAuth ? theme.colors.primary : theme.colors.textSecondary}
               />
@@ -998,7 +1094,7 @@ const ProfileScreen = ({ navigation }) => {
               <Text style={settingTextStyle}>Data Sync</Text>
               <Switch
                 value={dataSync}
-                onValueChange={setDataSync}
+                onValueChange={() => handleTogglePrivacy('sync')}
                 trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
                 thumbColor={dataSync ? theme.colors.primary : theme.colors.textSecondary}
               />
