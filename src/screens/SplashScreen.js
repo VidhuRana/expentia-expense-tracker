@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import Logo from '../components/Logo';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 
@@ -43,6 +42,7 @@ const SplashScreen = ({ navigation }) => {
 
   const containerStyle = {
     flex: 1,
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: theme.spacing.lg,
@@ -56,31 +56,22 @@ const SplashScreen = ({ navigation }) => {
 
   const subtitleStyle = {
     fontSize: 18,
-    color: '#ffffff',
+    color: theme.colors.text,
     textAlign: 'center',
     marginTop: theme.spacing.xl,
     fontWeight: '500',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
   };
 
   const taglineStyle = {
     fontSize: 14,
-    color: '#ffffff',
+    color: theme.colors.textSecondary,
     textAlign: 'center',
     marginTop: theme.spacing.md,
-    opacity: 0.9,
     fontWeight: '400',
   };
 
   return (
-    <LinearGradient
-      colors={[theme.colors.primary, theme.colors.accent]}
-      style={containerStyle}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
+    <View style={containerStyle}>
       <Animated.View
         style={[
           logoContainerStyle,
@@ -101,7 +92,7 @@ const SplashScreen = ({ navigation }) => {
           Your financial companion
         </Text>
       </Animated.View>
-    </LinearGradient>
+    </View>
   );
 };
 
