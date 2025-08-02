@@ -7,27 +7,27 @@ const { width, height } = Dimensions.get('window');
 
 const SplashScreen = ({ navigation }) => {
   const { theme } = useTheme();
-  const fadeAnim = new Animated.Value(0);
-  const scaleAnim = new Animated.Value(0.9);
-  const slideAnim = new Animated.Value(30);
+  const fadeAnim = new Animated.Value(1); // Start at full opacity
+  const scaleAnim = new Animated.Value(1); // Start at full scale
+  const slideAnim = new Animated.Value(0); // Start at normal position
 
   useEffect(() => {
-    // Start animation immediately for better perceived performance
+    // Start with a subtle entrance animation
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 500,
         useNativeDriver: true,
       }),
       Animated.spring(scaleAnim, {
-        toValue: 1,
+        toValue: 1.05, // Slight scale up for emphasis
         tension: 100,
         friction: 8,
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 600,
+        duration: 400,
         useNativeDriver: true,
       }),
     ]).start();
