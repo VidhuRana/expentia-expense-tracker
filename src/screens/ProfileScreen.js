@@ -876,51 +876,7 @@ const ProfileScreen = ({ navigation }) => {
         </View>
       </Modal>
 
-      {/* Privacy & Security Modal */}
-      <Modal
-        visible={showPrivacy}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowPrivacy(false)}
-      >
-        <View style={modalOverlayStyle}>
-          <View style={modalContentStyle}>
-            <View style={modalHeaderStyle}>
-              <Text style={modalTitleStyle}>Privacy & Security</Text>
-              <TouchableOpacity onPress={() => setShowPrivacy(false)} style={closeButtonStyle}>
-                <Ionicons name="close" size={24} color={theme.colors.text} />
-              </TouchableOpacity>
-            </View>
 
-            <View style={settingItemStyle}>
-              <Text style={settingTextStyle}>Biometric Authentication</Text>
-              <Switch
-                value={biometricAuth}
-                onValueChange={() => handleTogglePrivacy('biometric')}
-                trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
-                thumbColor={biometricAuth ? theme.colors.primary : theme.colors.textSecondary}
-              />
-            </View>
-
-            <View style={settingItemStyle}>
-              <Text style={settingTextStyle}>Data Sync</Text>
-              <Switch
-                value={dataSync}
-                onValueChange={() => handleTogglePrivacy('sync')}
-                trackColor={{ false: theme.colors.border, true: theme.colors.accent }}
-                thumbColor={dataSync ? theme.colors.primary : theme.colors.textSecondary}
-              />
-            </View>
-            <TouchableOpacity 
-              style={saveButtonStyle} 
-              onPress={handleSavePrivacy}
-              activeOpacity={0.7}
-            >
-              <Text style={saveButtonTextStyle}>Save Settings</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
 
 
