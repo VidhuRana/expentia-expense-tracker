@@ -29,8 +29,6 @@ const ProfileScreen = ({ navigation }) => {
   // Modal states
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showPrivacy, setShowPrivacy] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   
   // Success message states
@@ -45,8 +43,6 @@ const ProfileScreen = ({ navigation }) => {
   const [pushNotifications, setPushNotifications] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [budgetAlerts, setBudgetAlerts] = useState(true);
-  const [biometricAuth, setBiometricAuth] = useState(false);
-  const [dataSync, setDataSync] = useState(true);
 
   useEffect(() => {
     // Start animation immediately for better perceived performance
@@ -235,17 +231,6 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
-  const handleSavePrivacy = () => {
-    // Save privacy settings to user preferences
-    try {
-      // In a real app, this would save to AsyncStorage or database
-      showSuccessWithAnimation('Privacy settings updated! 🔒');
-      setShowPrivacy(false);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to save privacy settings');
-    }
-  };
-
   const handleToggleNotification = (type) => {
     switch (type) {
       case 'push':
@@ -260,36 +245,7 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
-  const handleTogglePrivacy = (type) => {
-    switch (type) {
-      case 'biometric':
-        setBiometricAuth(!biometricAuth);
-        break;
-      case 'sync':
-        setDataSync(!dataSync);
-        break;
-    }
-  };
 
-  const handleHelpItem = (item) => {
-    switch (item) {
-      case 'addExpenses':
-        Alert.alert('How to Add Expenses', 
-          '1. Tap the + button on any screen\n2. Enter expense details\n3. Select category and date\n4. Tap "Add Expense" to save');
-        break;
-      case 'setBudgets':
-        Alert.alert('How to Set Budgets', 
-          '1. Go to Budget tab (top-right on Home)\n2. Tap "Add Budget"\n3. Enter budget amount and category\n4. Set start/end dates\n5. Tap "Create Budget"');
-        break;
-      case 'viewReports':
-        Alert.alert('How to View Reports', 
-          '1. Go to Reports tab\n2. View spending by category\n3. Check monthly trends\n4. Analyze your spending patterns');
-        break;
-      case 'contactSupport':
-        Linking.openURL('mailto:support@expentia.app?subject=Support Request');
-        break;
-    }
-  };
 
   const handleAboutItem = (item) => {
     switch (item) {
@@ -305,74 +261,7 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
-  const handleExportData = () => {
-    Alert.alert(
-      'Export Data',
-      'Export your expense data as CSV file?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Export',
-          onPress: () => {
-            showSuccessWithAnimation('Data export started! 📊');
-            // In a real app, this would trigger actual data export
-          },
-        },
-      ]
-    );
-  };
 
-  const handleBackupData = () => {
-    Alert.alert(
-      'Backup Data',
-      'Create a backup of your data to cloud storage?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Backup',
-          onPress: () => {
-            showSuccessWithAnimation('Backup created successfully! ☁️');
-            // In a real app, this would trigger actual backup
-          },
-        },
-      ]
-    );
-  };
-
-  const handleClearData = () => {
-    Alert.alert(
-      'Clear All Data',
-      'This will permanently delete all your expenses and budgets. This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Clear',
-          style: 'destructive',
-          onPress: () => {
-            showSuccessWithAnimation('Data cleared successfully! 🗑️');
-            // In a real app, this would clear all user data
-          },
-        },
-      ]
-    );
-  };
-
-  const handleChangePassword = () => {
-    Alert.alert(
-      'Change Password',
-      'A password reset link will be sent to your email address.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Send Reset Link',
-          onPress: () => {
-            showSuccessWithAnimation('Password reset link sent! 📧');
-            // In a real app, this would send password reset email
-          },
-        },
-      ]
-    );
-  };
 
   const containerStyle = {
     flex: 1,
@@ -831,30 +720,6 @@ const ProfileScreen = ({ navigation }) => {
                 <TouchableOpacity 
                   style={menuItemStyle} 
                   activeOpacity={0.7}
-                  onPress={() => setShowPrivacy(true)}
-                >
-                  <View style={menuItemIconStyle}>
-                    <Ionicons name="shield-checkmark" size={20} color={theme.colors.text} />
-                  </View>
-                  <Text style={menuItemTextStyle}>Privacy & Security</Text>
-                  <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                  style={menuItemStyle} 
-                  activeOpacity={0.7}
-                  onPress={() => setShowHelp(true)}
-                >
-                  <View style={menuItemIconStyle}>
-                    <Ionicons name="help-circle" size={20} color={theme.colors.text} />
-                  </View>
-                  <Text style={menuItemTextStyle}>Help & Support</Text>
-                  <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                  style={menuItemStyle} 
-                  activeOpacity={0.7}
                   onPress={() => setShowAbout(true)}
                 >
                   <View style={menuItemIconStyle}>
@@ -864,53 +729,7 @@ const ProfileScreen = ({ navigation }) => {
                   <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={menuItemStyle} 
-                  activeOpacity={0.7}
-                  onPress={handleExportData}
-                >
-                  <View style={menuItemIconStyle}>
-                    <Ionicons name="download" size={20} color={theme.colors.text} />
-                  </View>
-                  <Text style={menuItemTextStyle}>Export Data</Text>
-                  <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-                </TouchableOpacity>
 
-                                 <TouchableOpacity 
-                   style={menuItemStyle} 
-                   activeOpacity={0.7}
-                   onPress={handleBackupData}
-                 >
-                   <View style={menuItemIconStyle}>
-                     <Ionicons name="cloud-upload" size={20} color={theme.colors.text} />
-                   </View>
-                   <Text style={menuItemTextStyle}>Backup Data</Text>
-                   <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-                 </TouchableOpacity>
-
-                 <TouchableOpacity 
-                   style={menuItemStyle} 
-                   activeOpacity={0.7}
-                   onPress={handleChangePassword}
-                 >
-                   <View style={menuItemIconStyle}>
-                     <Ionicons name="key" size={20} color={theme.colors.text} />
-                   </View>
-                   <Text style={menuItemTextStyle}>Change Password</Text>
-                   <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-                 </TouchableOpacity>
-
-                 <TouchableOpacity 
-                   style={menuItemStyle} 
-                   activeOpacity={0.7}
-                   onPress={handleClearData}
-                 >
-                   <View style={menuItemIconStyle}>
-                     <Ionicons name="trash" size={20} color={theme.colors.text} />
-                   </View>
-                   <Text style={menuItemTextStyle}>Clear All Data</Text>
-                   <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-                 </TouchableOpacity>
                </View>
 
               {/* Sign Out Button */}
@@ -950,14 +769,7 @@ const ProfileScreen = ({ navigation }) => {
         }}
       />
 
-      {/* AI Assistant Button */}
-      <TouchableOpacity 
-        style={aiButtonStyle} 
-        onPress={() => {}}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="chatbubble-ellipses" size={22} color={theme.colors.primary} />
-      </TouchableOpacity>
+
 
       {/* Edit Profile Modal */}
       <Modal
@@ -1110,50 +922,7 @@ const ProfileScreen = ({ navigation }) => {
         </View>
       </Modal>
 
-      {/* Help & Support Modal */}
-      <Modal
-        visible={showHelp}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowHelp(false)}
-      >
-        <View style={modalOverlayStyle}>
-          <View style={modalContentStyle}>
-            <View style={modalHeaderStyle}>
-              <Text style={modalTitleStyle}>Help & Support</Text>
-              <TouchableOpacity onPress={() => setShowHelp(false)} style={closeButtonStyle}>
-                <Ionicons name="close" size={24} color={theme.colors.text} />
-              </TouchableOpacity>
-            </View>
 
-            <View style={{ marginBottom: theme.spacing.lg }}>
-              <Text style={[settingTextStyle, { marginBottom: theme.spacing.md }]}>
-                Need help? Here are some common questions:
-              </Text>
-              
-              <TouchableOpacity style={settingItemStyle} activeOpacity={0.7} onPress={() => handleHelpItem('addExpenses')}>
-                <Text style={settingTextStyle}>How to add expenses?</Text>
-                <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={settingItemStyle} activeOpacity={0.7} onPress={() => handleHelpItem('setBudgets')}>
-                <Text style={settingTextStyle}>How to set budgets?</Text>
-                <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={settingItemStyle} activeOpacity={0.7} onPress={() => handleHelpItem('viewReports')}>
-                <Text style={settingTextStyle}>How to view reports?</Text>
-                <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={settingItemStyle} activeOpacity={0.7} onPress={() => handleHelpItem('contactSupport')}>
-                <Text style={settingTextStyle}>Contact Support</Text>
-                <Ionicons name="chevron-forward" size={20} color={theme.colors.textSecondary} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
 
       {/* About Modal */}
       <Modal
@@ -1203,20 +972,7 @@ const ProfileScreen = ({ navigation }) => {
         </View>
       </Modal>
 
-      {/* AI Assistant Button */}
-      <TouchableOpacity 
-        style={aiButtonStyle} 
-        onPress={() => {
-          Alert.alert(
-            'AI Assistant',
-            'Coming soon! 🤖\n\nOur AI assistant will help you with:\n• Expense categorization\n• Budget recommendations\n• Spending insights\n• Financial tips',
-            [{ text: 'OK', style: 'default' }]
-          );
-        }}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="chatbubble-ellipses" size={22} color={theme.colors.primary} />
-      </TouchableOpacity>
+
     </SafeAreaView>
   );
 };
